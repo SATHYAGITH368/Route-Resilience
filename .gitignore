@@ -1,5 +1,17 @@
-# Datasets
-datasets/
+# Ignore everything inside datasets directory
+datasets/**
+
+# Do not ignore the directory paths themselves
+!datasets/
+!datasets/train/
+!datasets/valid/
+!datasets/test/
+
+# Track the download script and placeholder files
+!datasets/deepglobe_download.py
+!datasets/train/.gitkeep
+!datasets/valid/.gitkeep
+!datasets/test/.gitkeep
 
 # Models and checkpoints
 *.pth
