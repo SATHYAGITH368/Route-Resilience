@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: #0a0e17;
+  color: #f0f4f8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Command-center shell */
+.app-shell {
+  background-color: #0a0e17;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08), transparent),
+    linear-gradient(rgba(45, 63, 86, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 63, 86, 0.08) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+.panel {
+  @apply border border-border bg-bg-card shadow-panel;
+}
+
+.panel-section-title {
+  @apply mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted;
+}
+
+.panel-section-title::before {
+  content: "";
+  @apply h-3 w-0.5 rounded-full bg-accent-info;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+  border-radius: 12px;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.gatekeeper-marker {
+  position: relative;
+}
+
+.gatekeeper-marker::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.custom-tooltip {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid #2d3f56 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  color: #f0f4f8 !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+}
+
+.custom-tooltip::before {
+  border-top-color: #2d3f56 !important;
+}
+
+/* Scrollbar styling for panels */
+.panel-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.panel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panel-scroll::-webkit-scrollbar-thumb {
+  background: #2d3f56;
+  border-radius: 4px;
+}
