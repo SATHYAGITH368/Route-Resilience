@@ -1,26 +1,9 @@
-# Phase II — Graph Skeletonization & Topological Healing
+# Phase II — graph from mask
 
-Colab notebook to convert DeepLab road masks into a healed routable graph.
+One notebook: `phase2_graph_healing.ipynb`
 
-| Item | Detail |
-|------|--------|
-| **Input** | `outputs/masks_deeplab/{id}_pred.png` from Phase I |
-| **Output** | `outputs/graphs_deeplab/{id}_graph.json` + visualization PNG |
-| **Runtime** | CPU (Colab or local) |
+Reads Phase I masks, skeletonizes them, builds a NetworkX graph, heals small gaps, saves JSON.
 
-## Pipeline
+CPU is fine. You need `outputs/masks_deeplab/{id}_pred.png` on Drive first.
 
-1. Clean mask (morphology)
-2. Skeletonize to centerlines
-3. Build NetworkX graph (nodes + edges)
-4. Heal gaps with Union-Find bridging
-5. Export JSON for Phase III
-
-## How to run
-
-1. Open `phase2_graph_healing.ipynb` in Google Colab.
-2. Mount Drive — masks must exist from `phase1/phase1_deeplabv3.ipynb`.
-3. Set `PROCESS_IDS` to your tile IDs (default: 493626, 477671, 422265, 194764).
-4. Run all cells.
-
-**Next:** Phase III reads `graphs_deeplab/*.json` for criticality analysis.
+Default sample IDs: 493626, 477671, 422265, 194764 — change `PROCESS_IDS` in the config cell if needed.

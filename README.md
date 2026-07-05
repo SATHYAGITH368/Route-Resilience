@@ -2,7 +2,7 @@
 
 **Occlusion-robust road extraction and graph-theoretic criticality analysis for urban mobility.**
 
-**Team CanopyBreakers** · ISRO BAH 2026 
+**CanopyBreakers** — ISRO BAH 2026 
 
 ---
 
@@ -172,7 +172,7 @@ Green edges = original roads, red = healed bridges.
 **Folder:** [`phase3/`](phase3/)
 
 **Problem:** Not all intersections are equal. Remove the wrong one and traffic reroutes badly across the whole city. Phase III finds **gatekeeper nodes** — junctions that sit on the most shortest paths — and simulates removing them one by one.
-i
+
 **What it computes:**
 
 **Betweenness centrality (BC)** — for each node, count how often it appears on shortest paths between all other pairs. High BC = bottleneck / gatekeeper.
@@ -321,4 +321,4 @@ If you use this pipeline, cite the DeepGlobe dataset and mention the four-phase 
 - [Phase III — Criticality](phase3/README.md)
 - [Phase IV — Dashboard](phase4/README.md)
 
-Questions or issues — open a GitHub issue or reach out to the team.
+Issues welcome on GitHub.
