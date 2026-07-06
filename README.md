@@ -96,14 +96,16 @@ Run the phases in order. Phase II expects masks from Phase I. Phase III expects 
 
 **Problem:** Roads in satellite images are often partially hidden. A broken mask means a broken route later. Phase I trains a deep learning model to predict a binary road mask — white pixels = road, black = not road.
 
-**Models included (two notebooks, same training pipeline):**
+**Models included (same training pipeline, fair comparison):**
 
-| Notebook | Architecture | Val IoU | Role |
-|----------|-------------|---------|------|
-| `phase1_unetpp.ipynb` | UNet++ + ResNet34 + scSE | ~0.51 | Baseline comparison |
-| `phase1_deeplabv3.ipynb` | DeepLabV3+ + ResNet34 + ASPP | **0.569** | **Production model** |
+| Notebook | Architecture | Params | Val IoU | Role |
+|----------|-------------|--------|---------|------|
+| `phase1_unetpp.ipynb` | UNet++ + ResNet34 + scSE | — | ~0.51 | Baseline comparison |
+| `phase1_deeplabv3.ipynb` | DeepLabV3+ + ResNet34 + ASPP | — | **0.569** | **Production model** |
+| `phase1_unext.ipynb` | [UNeXt](phase1/papers/README.md) (MLP-style, MICCAI 2022) | 1.47M | **0.481** | Lightweight / fast training |
+| `phase1_segformer_b1.ipynb` | SegFormer-B1 (MiT-B1) | — | — | Transformer baseline |
 
-We benchmarked both on identical data and kept DeepLabV3+ — roughly 6% better IoU with fewer parameters. Phase II onward uses `masks_deeplab/`.
+We benchmarked on identical DeepGlobe splits and kept **DeepLabV3+** for Phase II onward (`masks_deeplab/`) — highest Val IoU. **UNeXt** reached **0.481** on Colab T4 (30 epochs) with the smallest footprint; training curves in [`docs/results/phase1_unext_training_curves.png`](docs/results/phase1_unext_training_curves.png). Checkpoint: `checkpoints/best_road_model_unext.pth`.
 
 **Training details:**
 - Dataset: DeepGlobe road extraction (2,472 train / 619 val)
@@ -274,6 +276,7 @@ Total hackathon cost: **₹0** on Colab free tier.
 | Phase | Metric | Sample 493626 | Sample 477671 |
 |-------|--------|---------------|---------------|
 | I | Val IoU (DeepLabV3+) | 0.569 | — |
+| I | Val IoU (UNeXt) | 0.481 | — |
 | II | Connectivity after healing | 0.01 → 0.06 | 0.03 → 0.26 |
 | III | Top gatekeeper BC | n150, 0.597 | n29, 0.579 |
 | III | Resilience R (after removal) | 1.57 | 2.17 |
