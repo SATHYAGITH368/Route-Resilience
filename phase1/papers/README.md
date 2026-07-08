@@ -25,3 +25,16 @@ Enze Xie, Wenhai Wang, Zhiding Yu, Anima Anandkumar, Jose M. Alvarez, Ping Luo
 | Code | [NVlabs/SegFormer](https://github.com/NVlabs/SegFormer) |
 
 Used in `phase1_segformer_b1.ipynb` for the transformer baseline on DeepGlobe road segmentation.
+
+## DINOv2
+
+**DINOv2: Learning Robust Visual Features without Supervision**  
+Maxime Oquab, Timothée Darcet, Théo Moutakanni, et al. — Meta AI, 2023
+
+| | |
+|---|---|
+| PDF (local) | [`DINOv2_LearningRobustVisualFeatures.pdf`](./DINOv2_LearningRobustVisualFeatures.pdf) |
+| arXiv | [2304.07193](https://arxiv.org/abs/2304.07193) |
+| Code | [facebookresearch/dinov2](https://github.com/facebookresearch/dinov2) |
+
+Used in `phase1_dinov2_fpn.ipynb` as a frozen / lightly fine-tuned ViT backbone with a custom FPN decode head for occlusion-robust road masks.
