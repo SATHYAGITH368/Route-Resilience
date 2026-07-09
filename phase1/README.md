@@ -26,3 +26,5 @@ Phase II default still reads `masks_deeplab/`. If you use another model, copy ma
 **DINOv2 paper:** [arXiv:2304.07193](https://arxiv.org/abs/2304.07193) · [PDF](papers/DINOv2_LearningRobustVisualFeatures.pdf)
 
 **SAM paper:** [arXiv:2304.02643](https://arxiv.org/abs/2304.02643) · [PDF](papers/SAM_SegmentAnything.pdf) · [papers/README.md](papers/README.md)
+
+**SAM repair results:** [comparison screenshot](../docs/results/phase1_sam_mask_repair_comparison.png) · [results README](../docs/results/README.md#sam-mask-repair-phase-i-post-processing)
