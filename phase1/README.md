@@ -9,8 +9,11 @@ Colab notebooks — same DeepGlobe split, occlusion aug, and BCE+Dice loss for f
 | `phase1_unext.ipynb` | [UNeXt](papers/README.md) (light / fast) | `masks_unext/` | `best_road_model_unext.pth` |
 | `phase1_segformer_b1.ipynb` | [SegFormer-B1](papers/README.md) (MiT-B1) | `masks_segformer/` | `best_road_model_segformer_b1.pth` |
 | `phase1_dinov2_fpn.ipynb` | [DINOv2](papers/README.md) + FPN decoder | `masks_dinov2/` | `best_road_model_dinov2_fpn.pth` |
+| `phase1_sam_mask_repair.ipynb` | [SAM](papers/README.md) mask repair (no training) | `masks_sam_repaired/` | — |
 
 Put DeepGlobe under `RouteResilience/datasets/train/` on Drive. Runtime → GPU (T4).
+
+**SAM repair** is post-processing only — run after any Phase I mask folder exists (`masks_deeplab/`, etc.).
 
 **Suggested batch sizes if OOM:** DeepLab 8 → 4 | SegFormer 4 → 2 | UNeXt can try 12 | DINOv2-B 2 → 1.
 
@@ -20,4 +23,6 @@ Phase II default still reads `masks_deeplab/`. If you use another model, copy ma
 
 **SegFormer paper:** [arXiv:2105.15203](https://arxiv.org/abs/2105.15203) · [PDF](papers/SegFormer_SimpleEfficientDesign_SemanticSegmentation.pdf)
 
-**DINOv2 paper:** [arXiv:2304.07193](https://arxiv.org/abs/2304.07193) · [PDF](papers/DINOv2_LearningRobustVisualFeatures.pdf) · [papers/README.md](papers/README.md)
+**DINOv2 paper:** [arXiv:2304.07193](https://arxiv.org/abs/2304.07193) · [PDF](papers/DINOv2_LearningRobustVisualFeatures.pdf)
+
+**SAM paper:** [arXiv:2304.02643](https://arxiv.org/abs/2304.02643) · [PDF](papers/SAM_SegmentAnything.pdf) · [papers/README.md](papers/README.md)

@@ -38,3 +38,16 @@ Maxime Oquab, Timothée Darcet, Théo Moutakanni, et al. — Meta AI, 2023
 | Code | [facebookresearch/dinov2](https://github.com/facebookresearch/dinov2) |
 
 Used in `phase1_dinov2_fpn.ipynb` as a frozen / lightly fine-tuned ViT backbone with a custom FPN decode head for occlusion-robust road masks.
+
+## SAM (Segment Anything)
+
+**Segment Anything**  
+Alexander Kirillov, Eric Mintun, Nikhila Ravi, et al. — Meta AI, 2023
+
+| | |
+|---|---|
+| PDF (local) | [`SAM_SegmentAnything.pdf`](./SAM_SegmentAnything.pdf) |
+| arXiv | [2304.02643](https://arxiv.org/abs/2304.02643) |
+| Code | [facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything) |
+
+Used in `phase1_sam_mask_repair.ipynb` to repair broken road masks from Phase I **without retraining** the segmentation model. Prompts SAM with road/background points and gap bridges between disconnected components.
