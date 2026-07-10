@@ -51,3 +51,17 @@ Alexander Kirillov, Eric Mintun, Nikhila Ravi, et al. — Meta AI, 2023
 | Code | [facebookresearch/segment-anything](https://github.com/facebookresearch/segment-anything) |
 
 Used in `phase1_sam_mask_repair.ipynb` to repair broken road masks from Phase I **without retraining** the segmentation model. Prompts SAM with road/background points and gap bridges between disconnected components.
+
+## MFuser
+
+**Mamba as a Bridge: Where Vision Foundation Models Meet Vision Language Models for Domain-Generalized Semantic Segmentation**  
+Xin Zhang, Robby T. Tan — CVPR 2025 Highlight
+
+| | |
+|---|---|
+| PDF (local) | [`MFuser_MambaBridge_VFM_VLM.pdf`](./MFuser_MambaBridge_VFM_VLM.pdf) |
+| arXiv | [2504.03193](https://arxiv.org/abs/2504.03193) |
+| Code | [devinxzhang/MFuser](https://github.com/devinxzhang/MFuser) |
+| Project | [MFuser project page](https://devinxzhang.github.io/MFuser_ProjPage/) |
+
+Used in `phase1_mfuser.ipynb` as **MFuser-lite**: DINOv2 (VFM) + CLIP (VLM) + gated fusion + text-bias decode head for DeepGlobe roads. Full paper uses Mamba blocks (MVFuser, MTEnhancer) — see official repo for complete DGSS setup.
