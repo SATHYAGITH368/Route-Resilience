@@ -80,7 +80,8 @@ RouteResilience/
 ├── datasets/train/           ← DeepGlobe images (*_sat.jpg, *_mask.png)
 ├── checkpoints/              ← saved model weights (.pth)
 └── outputs/
-    ├── masks_deeplab/        ← Phase I predictions
+    ├── masks_deeplab/        ← Phase I predictions (production)
+    ├── masks_sam_repaired/   ← optional SAM post-process
     ├── graphs_deeplab/      ← Phase II graphs
     ├── analysis_deeplab/    ← Phase III criticality JSON
     └── visualizations_deeplab/
@@ -96,37 +97,44 @@ Run the phases in order. Phase II expects masks from Phase I. Phase III expects 
 
 **Problem:** Roads in satellite images are often partially hidden. A broken mask means a broken route later. Phase I trains a deep learning model to predict a binary road mask — white pixels = road, black = not road.
 
-**Models included (same training pipeline, fair comparison):**
+**Models included (same DeepGlobe split / occlusion aug / BCE+Dice where we train):**
 
 | Notebook | Architecture | Params | Val IoU | Role |
-|----------|-------------|--------|---------|------|
+|----------|--------------|--------|---------|------|
 | `phase1_unetpp.ipynb` | UNet++ + ResNet34 + scSE | — | ~0.51 | Baseline comparison |
 | `phase1_deeplabv3.ipynb` | DeepLabV3+ + ResNet34 + ASPP | — | **0.569** | **Production model** |
-| `phase1_unext.ipynb` | [UNeXt](phase1/papers/README.md) (MLP-style, MICCAI 2022) | 1.47M | **0.481** | Lightweight / fast training |
-| `phase1_segformer_b1.ipynb` | SegFormer-B1 (MiT-B1) | — | — | Transformer baseline |
+| `phase1_unext.ipynb` | UNeXt (MLP-style, MICCAI 2022) | 1.47M | 0.481 | Lightweight / fast training |
+| `phase1_segformer_b1.ipynb` | SegFormer-B1 (MiT-B1) | ~13.7M | — | Transformer baseline |
+| `phase1_dinov2_fpn.ipynb` | DINOv2-B + FPN decoder | — | — | Occlusion-robust ViT experiment |
+| `phase1_mfuser.ipynb` | MFuser-lite (DINOv2 + CLIP fusion) | — | — | VFM+VLM stretch (CVPR 2025) |
+| `phase1_sam_mask_repair.ipynb` | SAM post-processing | — | — | Mask repair **without** retraining |
 
-We benchmarked on identical DeepGlobe splits and kept **DeepLabV3+** for Phase II onward (`masks_deeplab/`) — highest Val IoU. **UNeXt** reached **0.481** on Colab T4 (30 epochs) with the smallest footprint; training curves in [`docs/results/phase1_unext_training_curves.png`](docs/results/phase1_unext_training_curves.png). Checkpoint: `checkpoints/best_road_model_unext.pth`.
+We kept **DeepLabV3+** for Phase II onward (`masks_deeplab/`) — highest measured Val IoU among CNN/MLP runs. UNeXt reached **0.481** on Colab T4 (30 epochs) with the smallest footprint. SegFormer / DINOv2 / MFuser are optional experiments on the same pipeline. **SAM repair** takes existing masks, fills canopy gaps (e.g. tile `493626`), and writes `masks_sam_repaired/` — see [results screenshot](docs/results/phase1_sam_mask_repair_comparison.png).
 
 **Training details:**
 - Dataset: DeepGlobe road extraction (2,472 train / 619 val)
-- Input size: 512×512, ImageNet normalisation
+- Input size: 512×512 (DINOv2 / MFuser use 518 for patch size 14), ImageNet normalisation
 - Loss: `0.4 × BCE + 0.6 × Dice` (Dice helps with thin roads; IoU used for evaluation)
 - Augmentation: flips, rotation, brightness/contrast — plus synthetic **occlusion patches** so the model learns to infer roads under tree cover
-- Hardware: Colab T4 GPU, ~30 epochs, mixed precision
+- Hardware: Colab T4 GPU, ~30 epochs
 
-**Outputs:**
+**Papers (PDFs in [`phase1/papers/`](phase1/papers/)):** [UNeXt](https://arxiv.org/abs/2203.04967) · [SegFormer](https://arxiv.org/abs/2105.15203) · [DINOv2](https://arxiv.org/abs/2304.07193) · [SAM](https://arxiv.org/abs/2304.02643) · [MFuser](https://arxiv.org/abs/2504.03193)
+
+**Outputs (production path):**
 ```
 checkpoints/best_road_model_deeplabv3.pth
 outputs/masks_deeplab/{tile_id}_pred.png
 ```
 
-**How to run:**
-1. Open `phase1/phase1_deeplabv3.ipynb` in Colab.
-2. Runtime → GPU (T4 is enough).
-3. Mount Drive, point `DRIVE_BASE` to your `RouteResilience` folder.
-4. Run all cells. Training takes a few hours on T4; inference on val samples is fast.
+Optional mask folders from experiments: `masks_unetpp/`, `masks_unext/`, `masks_segformer/`, `masks_dinov2/`, `masks_mfuser/`, `masks_sam_repaired/`.
 
-**What to expect:** Masks won't be pixel-perfect under heavy occlusion — that's fine. Phase II is built to heal topology. What matters is that main corridors stay connected enough to skeletonize.
+**How to run:**
+1. Open `phase1/phase1_deeplabv3.ipynb` in Colab (or any experiment notebook above).
+2. Runtime → GPU (T4 is enough; use batch 2→1 for DINOv2 / MFuser if OOM).
+3. Mount Drive, point `DRIVE_BASE` to your `RouteResilience` folder.
+4. Run all cells. Training takes a few hours on T4; SAM repair / inference is much faster.
+
+**What to expect:** Masks won't be pixel-perfect under heavy occlusion — that's fine. Phase II is built to heal topology; SAM can pre-stitch thin breaks. What matters is that main corridors stay connected enough to skeletonize.
 
 ---
 
@@ -275,8 +283,8 @@ Total hackathon cost: **₹0** on Colab free tier.
 
 | Phase | Metric | Sample 493626 | Sample 477671 |
 |-------|--------|---------------|---------------|
-| I | Val IoU (DeepLabV3+) | 0.569 | — |
-| I | Val IoU (UNeXt) | 0.481 | — |
+| I | Val IoU (DeepLabV3+ / UNet++ / UNeXt) | **0.569** / ~0.51 / 0.481 | — |
+| I | SAM repair (components before→after) | 13→9 | 16→10 |
 | II | Connectivity after healing | 0.01 → 0.06 | 0.03 → 0.26 |
 | III | Top gatekeeper BC | n150, 0.597 | n29, 0.579 |
 | III | Resilience R (after removal) | 1.57 | 2.17 |
@@ -298,7 +306,7 @@ Total hackathon cost: **₹0** on Colab free tier.
 
 | Issue | Fix |
 |-------|-----|
-| Phase I OOM on Colab | Use batch size 4, or stick to DeepLabV3+ (smaller than UNet++ + ResNet50) |
+| Phase I OOM on Colab | DeepLab batch 8→4; SegFormer 4→2; DINOv2 / MFuser 2→1; or stick to DeepLabV3+ / UNeXt |
 | Phase II "mask not found" | Run Phase I inference first; check `outputs/masks_deeplab/{id}_pred.png` exists |
 | Phase III "no graph files" | Run Phase II; check `outputs/graphs_deeplab/` |
 | Dashboard shows error page | Copy `{id}_criticality.json` to `phase4/dashboard/public/data/` |
